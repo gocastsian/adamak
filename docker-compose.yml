@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  mysql:
+    platform: linux/amd64
+    image: mysql:5.7
+    volumes:
+      - ./temp/mysql:/var/lib/mysql
+    restart: always
+    hostname: mysql
+    container_name: adamak_mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_USER: adamak_user
+      MYSQL_PASSWORD: adamak_pass
+      MYSQL_DATABASE: adamak
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --skip-ssl --character-set-server=utf8mb4
