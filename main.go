@@ -19,7 +19,11 @@ func main() {
 	e.Validator = validations.New()
 
 	// add routes
+	e.GET("/users", controllers.FindUsers)
 	e.POST("/users", controllers.CreateUser)
+	e.GET("/users/:id", controllers.FindUser)
+	e.PATCH("/users/:id", controllers.UpdateUser)
+	e.DELETE("/users/:id", controllers.DeleteUser)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
