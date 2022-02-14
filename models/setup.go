@@ -1,5 +1,5 @@
 package models
-// inspired by https://blog.logrocket.com/how-to-build-a-rest-api-with-golang-using-gin-and-gorm/
+// source: https://blog.logrocket.com/how-to-build-a-rest-api-with-golang-using-gin-and-gorm/
 
 import (
 	"gorm.io/driver/mysql"
