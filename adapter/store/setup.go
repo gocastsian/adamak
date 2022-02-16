@@ -1,16 +1,15 @@
-package models
-// source: https://blog.logrocket.com/how-to-build-a-rest-api-with-golang-using-gin-and-gorm/
+package store
 
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+type MySQLStore struct {
+	db *gorm.DB
+}
 
-func ConnectDatabase() {
-	dsn := "adamak_user:adamak_pass@tcp(127.0.0.1:3306)/adamak?charset=utf8mb4&parseTime=True&loc=Local"
-
+func New(dsn string) MySQLStore {
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -21,5 +20,5 @@ func ConnectDatabase() {
 		panic("Failed to auto migrate database!")
 	}
 
-	DB = database
+	return MySQLStore{db: database}
 }
