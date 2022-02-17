@@ -1,31 +1,29 @@
 package main
 
 import (
-	"github.com/gocastsian/adamak/adapter/store"
-	v1 "github.com/gocastsian/adamak/delivery/http/v1"
-	"github.com/gocastsian/adamak/validator"
+	"github.com/gocastsian/adamak/protocol"
+	"github.com/gocastsian/adamak/services"
 
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
-	dsn := "adamak_user:adamak_pass@tcp(127.0.0.1:3306)/adamak?charset=utf8mb4&parseTime=True&loc=Local"
-	// connect to database and auto migrate
-	mysqlStore := store.New(dsn)
+	var config = protocol.ServiceInitializeConfig{
+		StorageEngine: "mysql", // TODO::: get from OS flags
+	}
+
+	switch config.StorageEngine {
+	case "mysql":
+		dsn := "adamak_user:adamak_pass@tcp(127.0.0.1:3306)/adamak?charset=utf8mb4&parseTime=True&loc=Local"
+		config.MySQL.Init(dsn)
+	default:
+		panic("[ADAMAK] Don't support requested storage engine: " + config.StorageEngine)
+	}
 
 	// setup http server and router
-	e := echo.New()
+	config.Echo = echo.New()
 
-	// add routes
-	e.GET("/users", v1.FindUsers(mysqlStore))
-	e.POST("/users", v1.CreateUser(mysqlStore,
-		validator.ValidateCreateUser))
-	e.GET("/users/:id", v1.FindUser(mysqlStore,
-		validator.ValidateFindUser(mysqlStore)))
-	e.PATCH("/users/:id", v1.UpdateUser(mysqlStore,
-		validator.ValidateUpdateUser(mysqlStore)))
-	e.DELETE("/users/:id", v1.DeleteUser(mysqlStore,
-		validator.ValidateDeleteUser(mysqlStore)))
+	services.Init(&config)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	config.Echo.Logger.Fatal(config.Echo.Start(":8080"))
 }
