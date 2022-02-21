@@ -21,7 +21,7 @@ func DeleteUser(store store.MySQLStore, validator contract.ValidateDeleteUser) e
 		var req = dto.DeleteUserRequest{ID: uint(userID)}
 
 		if err := validator(c.Request().Context(), req); err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 		}
 
 		if _, err := user.New(store).DeleteUser(c.Request().Context(), req); err != nil {
