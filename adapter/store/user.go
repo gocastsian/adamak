@@ -18,7 +18,7 @@ func (m MySQLStore) CreateUser(ctx context.Context, user entity.User) (entity.Us
 func (m MySQLStore) GetUser(ctx context.Context, userID uint) (entity.User, error) {
 	user := User{}
 	if err := m.db.WithContext(ctx).Where("id = ?", userID).First(&user).Error; err != nil {
-		return entity.User{}, nil
+		return entity.User{}, err
 	}
 
 	return mapToUserEntity(user), nil
