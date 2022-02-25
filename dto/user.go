@@ -13,7 +13,7 @@ type CreateUserResponse struct {
 }
 
 type UpdateUserRequest struct {
-	ID uint `json:"-"`
+	ID uint `json:"id"`
 	Name  string `json:"name"`
 }
 
@@ -28,7 +28,7 @@ type FindUsersResponse struct {
 }
 
 type FindUserRequest struct {
-	ID uint `json:"-"`
+	ID uint `json:"id"`
 }
 
 type FindUserResponse struct {
@@ -36,7 +36,7 @@ type FindUserResponse struct {
 }
 
 type DeleteUserRequest struct {
-	ID uint `json:"-"`
+	ID uint `json:"id"`
 }
 
 type DeleteUserResponse struct {}

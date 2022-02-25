@@ -21,7 +21,7 @@ func FindUser(store store.MySQLStore, validator contract.ValidateFindUser) echo.
 		var req = dto.FindUserRequest{ID: uint(userID)}
 
 		if err := validator(c.Request().Context(), req); err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 		}
 
 		resp, err := user.New(store).FindUser(c.Request().Context(), req)

@@ -26,7 +26,7 @@ func UpdateUser(store store.MySQLStore, validator contract.ValidateUpdateUser) e
 
 		req.ID = uint(userID)
 		if err := validator(c.Request().Context(), req); err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 		}
 
 		resp, err := user.New(store).UpdateUser(c.Request().Context(), req)

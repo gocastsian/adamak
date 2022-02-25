@@ -18,7 +18,7 @@ func CreateUser(store store.MySQLStore, validator contract.ValidateCreateUser) e
 		}
 
 		if err := validator(req); err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 		}
 
 		resp, err := user.New(store).CreateUser(c.Request().Context(), req)
