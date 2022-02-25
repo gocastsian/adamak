@@ -122,3 +122,37 @@ func TestFindUser(t *testing.T) {
 		assert.EqualValues(t, returnedUser, resp.User)
 	})
 }
+
+func TestDeleteUser(t *testing.T) {
+	t.Run("fail on store delete user error", func(t *testing.T) {
+		interactor, mockUserStore, teardown := setup(t)
+		defer teardown()
+
+		req := dto.DeleteUserRequest{
+			ID: 0,
+		}
+
+		ctx := context.Background()
+
+		mockUserStore.EXPECT().DeleteUser(ctx, gomock.Any()).Return(fmt.Errorf(""))
+
+		_, err := interactor.DeleteUser(ctx, req)
+		assert.NotNil(t, err)
+	})
+
+	t.Run("successful", func(t *testing.T) {
+		interactor, mockUserStore, teardown := setup(t)
+		defer teardown()
+
+		req := dto.DeleteUserRequest{
+			ID: uint(rand.Uint64()),
+		}
+
+		ctx := context.Background()
+
+		mockUserStore.EXPECT().DeleteUser(ctx, req.ID).Return(nil)
+
+		_, err := interactor.DeleteUser(ctx, req)
+		assert.Nil(t, err)
+	})
+}
