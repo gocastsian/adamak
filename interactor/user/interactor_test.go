@@ -80,3 +80,45 @@ func TestCreateUser(t *testing.T) {
 		assert.EqualValues(t, returnedUser, resp.User)
 	})
 }
+
+func TestFindUser(t *testing.T) {
+	t.Run("fail on store get user error", func(t *testing.T) {
+		interactor, mockUserStore, teardown := setup(t)
+		defer teardown()
+
+		req := dto.FindUserRequest{
+			ID: 0,
+		}
+
+		ctx := context.Background()
+
+		mockUserStore.EXPECT().GetUser(ctx, gomock.Any()).Return(entity.User{}, fmt.Errorf(""))
+
+		_, err := interactor.FindUser(ctx, req)
+		assert.NotNil(t, err)
+	})
+
+	t.Run("successful", func(t *testing.T) {
+		interactor, mockUserStore, teardown := setup(t)
+		defer teardown()
+
+		req := dto.FindUserRequest{
+			ID: uint(rand.Uint64()),
+		}
+
+		ctx := context.Background()
+
+		returnedUser := entity.User{
+			ID:       req.ID,
+			Name:     faker.Name(),
+			Email:    faker.Email(),
+			Password: faker.Password(),
+		}
+
+		mockUserStore.EXPECT().GetUser(ctx, req.ID).Return(returnedUser, nil)
+
+		resp, err := interactor.FindUser(ctx, req)
+		assert.Nil(t, err)
+		assert.EqualValues(t, returnedUser, resp.User)
+	})
+}
